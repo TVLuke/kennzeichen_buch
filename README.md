@@ -1,5 +1,7 @@
 # Mein großes Kennzeichen Buch
 
+![Titelbild mit Kennzeichen-Wortwolke](output_maps/kfz_titelbild.png)
+
 Ein Sammelbuch für deutsche Autokennzeichen mit Karten, Checklisten und Rätseln. Zielgruppe sind Kinder im Alter von sechs oder sieben Jahren, da in diesem Alter häufig eine Faszination für Autokennzeichen entsteht. Das Buch enthält einfache Rätsel und kurze Texte und hilft beim Erkennen von Buchstaben und beim Lesenlernen.
 
 ## Beschreibung
