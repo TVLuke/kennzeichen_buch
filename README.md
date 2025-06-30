@@ -40,13 +40,13 @@ Das Buch ist so gestaltet, dass es ausgedruckt und gebunden werden kann. Die Sei
 
 ## Installation
 
-1. Klonen Sie das Repository:
+1. Klone das Repository:
    ```
    git clone https://github.com/yourusername/kfz-kennzeichen-buch.git
    cd kfz-kennzeichen-buch
    ```
 
-2. Erstellen Sie eine virtuelle Umgebung und installieren Sie die Abhängigkeiten:
+2. Erstelle eine virtuelle Umgebung und installiere die Abhängigkeiten:
    ```
    python -m venv kfz_env
    source kfz_env/bin/activate  # Unter Windows: kfz_env\Scripts\activate
@@ -55,7 +55,7 @@ Das Buch ist so gestaltet, dass es ausgedruckt und gebunden werden kann. Die Sei
 
 ## Verwendung
 
-Führen Sie einfach das Hauptskript aus:
+Führe einfach das Hauptskript aus:
 
 ```
 python generate_kfz_maps_neu.py
@@ -102,7 +102,7 @@ Das Projekt verwendet zwei Hauptdatenquellen:
 
 ## Datenanforderungen
 
-Die folgenden Dateien müssen heruntergeladen und im Projektverzeichnis platziert werden, bevor das Skript ausgeführt werden kann:
+Die folgenden Dateien musst du herunterladen und im Projektverzeichnis platzieren, bevor du das Skript ausführst:
 
 1. **CSV-Datei mit KFZ-Kennzeichen**
    - Herunterladen von: https://github.com/Octoate/KfzKennzeichen/
