@@ -1,0 +1,8 @@
+geopandas==0.14.1
+matplotlib==3.8.2
+shapely==2.0.2
+numpy==1.26.3
+pandas==2.1.4
+PyPDF2==3.0.1
+Pillow==10.2.0
+reportlab==4.1.0

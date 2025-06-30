@@ -1,6 +1,6 @@
 # Mein großes Kennzeichen Buch
 
-Ein Sammelbuch für deutsche Autokennzeichen mit Karten und Checklisten. Zielgruppe sind vermutlich Kinder im Alter von sechs oder sieben Jahren, da entsheht anscheinend ja häufiger mal eine Faszination für Autkennzeichen. Das Buch enthält einfache Rätsel und kurze Texte und hilft beim erkennen von Buchstaben und Lesenlernen.
+Ein Sammelbuch für deutsche Autokennzeichen mit Karten, Checklisten und Rätseln. Zielgruppe sind Kinder im Alter von sechs oder sieben Jahren, da in diesem Alter häufig eine Faszination für Autokennzeichen entsteht. Das Buch enthält einfache Rätsel und kurze Texte und hilft beim Erkennen von Buchstaben und beim Lesenlernen.
 
 ## Beschreibung
 
@@ -9,6 +9,11 @@ Dieses Projekt erstellt ein PDF-Sammelbuch für deutsche KFZ-Kennzeichen. Das Bu
 - Eine Titelseite mit einer Wortwolke der Regionen
 - Karten von Deutschland, die die Regionen der Kennzeichen farblich hervorheben
 - Listen mit Checkboxen für alle regulären und seltenen Kennzeichen
+- Verschiedene kindgerechte Rätsel:
+  - Buchstabenrätsel: Finde und umkreise die Kennzeichenbuchstaben in Städtenamen
+  - Worträtsel: Finde Wörter aus Kennzeichenkombinationen
+  - Verbindungsrätsel: Verbinde Städte mit ihren Kennzeichen
+- Lösungsseiten für alle Rätsel
 - Lizenzinformationen und Quellenangaben
 
 Das Buch ist so gestaltet, dass es ausgedruckt und gebunden werden kann. Die Seitenzahl ist immer durch 4 teilbar, und es gibt mindestens eine leere Seite am Ende, was für den Druck optimal ist.
@@ -51,23 +56,33 @@ Das Buch ist so gestaltet, dass es ausgedruckt und gebunden werden kann. Die Sei
 Führen Sie einfach das Hauptskript aus:
 
 ```
-python main.py
+python generate_kfz_maps_neu.py
 ```
 
 Dies führt folgende Schritte aus:
 1. Erstellt das Titelbild mit einer Wortwolke der Regionen
 2. Generiert Karten für alle regulären Kennzeichen
-3. Erstellt ein LaTeX-Dokument mit Listen aller Kennzeichen
-4. Kompiliert das LaTeX-Dokument zu einem PDF
-5. Fügt das Titelbild und leere Seiten hinzu, um ein druckfertiges PDF zu erstellen
+3. Erstellt Rätsel und Aktivitäten für Kinder
+4. Erstellt ein LaTeX-Dokument mit Listen aller Kennzeichen und Rätseln
+5. Kompiliert das LaTeX-Dokument zu einem PDF
+6. Fügt das Titelbild und leere Seiten hinzu, um ein druckfertiges PDF zu erstellen
 
-Das fertige PDF wird als `kfz_sammelbuch_final.pdf` gespeichert.
+Das fertige PDF wird als `kfz_sammelbuch_HH_final.pdf` gespeichert.
 
 ## Einzelne Komponenten
 
-- `main.py`: Hauptskript, das den gesamten Prozess steuert
-- `create_title_image.py`: Erstellt das Titelbild mit einer Wortwolke
-- `generate_kfz_maps_neu.py`: Generiert die Karten und das LaTeX-Dokument
+- `generate_kfz_maps_neu.py`: Hauptskript, das den gesamten Prozess steuert, generiert Karten, Rätsel und das LaTeX-Dokument
+- `kfz_puzzles.json`: Speichert generierte Rätsel für die Wiederverwendung
+
+## Rätseltypen
+
+Das Buch enthält drei Arten von Rätseln:
+
+1. **Buchstabenrätsel**: Kinder suchen und umkreisen die Buchstaben des Kennzeichens im Städtenamen. Beispiel: Für "HH" werden die Buchstaben H und H in "HAMBURG" umkreist. Die Buchstaben haben einen vergrößerten Abstand für bessere Lesbarkeit.
+
+2. **Worträtsel**: Kinder bilden Wörter aus Kennzeichenkombinationen. Beispiel: "STRASSE" wird aus den Kennzeichen S-TR-AS-SE gebildet.
+
+3. **Verbindungsrätsel**: Kinder verbinden Städtenamen mit ihren entsprechenden Kennzeichen.
 
 ## Datenquellen
 

@@ -1,0 +1,839 @@
+[
+    {
+        "wort": "STRASSE",
+        "loesung": [
+            {
+                "code": "S",
+                "name": "Stuttgart"
+            },
+            {
+                "code": "TR",
+                "name": "Trier"
+            },
+            {
+                "code": "AS",
+                "name": "Amberg-Sulzbach"
+            },
+            {
+                "code": "SE",
+                "name": "Bad Segeberg"
+            }
+        ]
+    },
+    {
+        "wort": "FAHRRAD",
+        "loesung": [
+            {
+                "code": "F",
+                "name": "Frankfurt/Main"
+            },
+            {
+                "code": "A",
+                "name": "Augsburg"
+            },
+            {
+                "code": "HR",
+                "name": "Homberg"
+            },
+            {
+                "code": "RA",
+                "name": "Rastatt"
+            },
+            {
+                "code": "D",
+                "name": "Düsseldorf"
+            }
+        ]
+    },
+    {
+        "wort": "KREUZUNG",
+        "loesung": [
+            {
+                "code": "KR",
+                "name": "Krefeld"
+            },
+            {
+                "code": "EU",
+                "name": "Euskirchen"
+            },
+            {
+                "code": "Z",
+                "name": "Zwickau"
+            },
+            {
+                "code": "UN",
+                "name": "Unna"
+            },
+            {
+                "code": "G",
+                "name": "Gera"
+            }
+        ]
+    },
+    {
+        "wort": "BAHNHOF",
+        "loesung": [
+            {
+                "code": "BA",
+                "name": "Bamberg"
+            },
+            {
+                "code": "HN",
+                "name": "Heilbronn"
+            },
+            {
+                "code": "H",
+                "name": "Hannover"
+            },
+            {
+                "code": "OF",
+                "name": "Offenbach/Main"
+            }
+        ]
+    },
+    {
+        "wort": "BRUECKE",
+        "loesung": [
+            {
+                "code": "B",
+                "name": "Berlin"
+            },
+            {
+                "code": "R",
+                "name": "Regensburg"
+            },
+            {
+                "code": "UE",
+                "name": "Uelzen"
+            },
+            {
+                "code": "C",
+                "name": "Chemnitz"
+            },
+            {
+                "code": "KE",
+                "name": "Kempten"
+            }
+        ]
+    },
+    {
+        "wort": "STRASSENBAHN",
+        "loesung": [
+            {
+                "code": "S",
+                "name": "Stuttgart"
+            },
+            {
+                "code": "TR",
+                "name": "Trier"
+            },
+            {
+                "code": "AS",
+                "name": "Amberg-Sulzbach"
+            },
+            {
+                "code": "SE",
+                "name": "Bad Segeberg"
+            },
+            {
+                "code": "N",
+                "name": "Nürnberg"
+            },
+            {
+                "code": "BA",
+                "name": "Bamberg"
+            },
+            {
+                "code": "HN",
+                "name": "Heilbronn"
+            }
+        ]
+    },
+    {
+        "wort": "LASTWAGEN",
+        "loesung": [
+            {
+                "code": "LA",
+                "name": "Landshut"
+            },
+            {
+                "code": "ST",
+                "name": "Steinfurt"
+            },
+            {
+                "code": "W",
+                "name": "Wuppertal"
+            },
+            {
+                "code": "A",
+                "name": "Augsburg"
+            },
+            {
+                "code": "G",
+                "name": "Gera"
+            },
+            {
+                "code": "EN",
+                "name": "Ennepe-Ruhr-Kreis"
+            }
+        ]
+    },
+    {
+        "wort": "FEUERWEHR",
+        "loesung": [
+            {
+                "code": "F",
+                "name": "Frankfurt/Main"
+            },
+            {
+                "code": "EU",
+                "name": "Euskirchen"
+            },
+            {
+                "code": "ER",
+                "name": "Erlangen"
+            },
+            {
+                "code": "WE",
+                "name": "Weimar"
+            },
+            {
+                "code": "HR",
+                "name": "Homberg"
+            }
+        ]
+    },
+    {
+        "wort": "KRANKENWAGEN",
+        "loesung": [
+            {
+                "code": "KR",
+                "name": "Krefeld"
+            },
+            {
+                "code": "AN",
+                "name": "Ansbach"
+            },
+            {
+                "code": "KE",
+                "name": "Kempten"
+            },
+            {
+                "code": "NW",
+                "name": "Neustadt/Weinstraße"
+            },
+            {
+                "code": "A",
+                "name": "Augsburg"
+            },
+            {
+                "code": "G",
+                "name": "Gera"
+            },
+            {
+                "code": "EN",
+                "name": "Ennepe-Ruhr-Kreis"
+            }
+        ]
+    },
+    {
+        "wort": "KREISVERKEHR",
+        "loesung": [
+            {
+                "code": "KR",
+                "name": "Krefeld"
+            },
+            {
+                "code": "EI",
+                "name": "Eichstätt"
+            },
+            {
+                "code": "S",
+                "name": "Stuttgart"
+            },
+            {
+                "code": "VER",
+                "name": "Verden"
+            },
+            {
+                "code": "KE",
+                "name": "Kempten"
+            },
+            {
+                "code": "HR",
+                "name": "Homberg"
+            }
+        ]
+    },
+    {
+        "wort": "FAHRRADHELM",
+        "loesung": [
+            {
+                "code": "F",
+                "name": "Frankfurt/Main"
+            },
+            {
+                "code": "A",
+                "name": "Augsburg"
+            },
+            {
+                "code": "HR",
+                "name": "Homberg"
+            },
+            {
+                "code": "RA",
+                "name": "Rastatt"
+            },
+            {
+                "code": "D",
+                "name": "Düsseldorf"
+            },
+            {
+                "code": "HE",
+                "name": "Helmstedt"
+            },
+            {
+                "code": "LM",
+                "name": "Limburg-Weilburg"
+            }
+        ]
+    },
+    {
+        "wort": "WARNWESTE",
+        "loesung": [
+            {
+                "code": "W",
+                "name": "Wuppertal"
+            },
+            {
+                "code": "A",
+                "name": "Augsburg"
+            },
+            {
+                "code": "R",
+                "name": "Regensburg"
+            },
+            {
+                "code": "N",
+                "name": "Nürnberg"
+            },
+            {
+                "code": "WE",
+                "name": "Weimar"
+            },
+            {
+                "code": "ST",
+                "name": "Steinfurt"
+            },
+            {
+                "code": "E",
+                "name": "Essen"
+            }
+        ]
+    },
+    {
+        "wort": "FAHRSCHULE",
+        "loesung": [
+            {
+                "code": "F",
+                "name": "Frankfurt/Main"
+            },
+            {
+                "code": "A",
+                "name": "Augsburg"
+            },
+            {
+                "code": "HR",
+                "name": "Homberg"
+            },
+            {
+                "code": "SC",
+                "name": "Schwabach"
+            },
+            {
+                "code": "H",
+                "name": "Hannover"
+            },
+            {
+                "code": "UL",
+                "name": "Ulm"
+            },
+            {
+                "code": "E",
+                "name": "Essen"
+            }
+        ]
+    },
+    {
+        "wort": "SCHULWEG",
+        "loesung": [
+            {
+                "code": "SC",
+                "name": "Schwabach"
+            },
+            {
+                "code": "H",
+                "name": "Hannover"
+            },
+            {
+                "code": "UL",
+                "name": "Ulm"
+            },
+            {
+                "code": "WE",
+                "name": "Weimar"
+            },
+            {
+                "code": "G",
+                "name": "Gera"
+            }
+        ]
+    },
+    {
+        "wort": "FAHRRADKORB",
+        "loesung": [
+            {
+                "code": "F",
+                "name": "Frankfurt/Main"
+            },
+            {
+                "code": "A",
+                "name": "Augsburg"
+            },
+            {
+                "code": "HR",
+                "name": "Homberg"
+            },
+            {
+                "code": "RA",
+                "name": "Rastatt"
+            },
+            {
+                "code": "D",
+                "name": "Düsseldorf"
+            },
+            {
+                "code": "KO",
+                "name": "Koblenz"
+            },
+            {
+                "code": "R",
+                "name": "Regensburg"
+            },
+            {
+                "code": "B",
+                "name": "Berlin"
+            }
+        ]
+    },
+    {
+        "wort": "GEGENVERKEHR",
+        "loesung": [
+            {
+                "code": "GE",
+                "name": "Gelsenkirchen"
+            },
+            {
+                "code": "G",
+                "name": "Gera"
+            },
+            {
+                "code": "EN",
+                "name": "Ennepe-Ruhr-Kreis"
+            },
+            {
+                "code": "VER",
+                "name": "Verden"
+            },
+            {
+                "code": "KE",
+                "name": "Kempten"
+            },
+            {
+                "code": "HR",
+                "name": "Homberg"
+            }
+        ]
+    },
+    {
+        "wort": "PARKVERBOT",
+        "loesung": [
+            {
+                "code": "PA",
+                "name": "Passau"
+            },
+            {
+                "code": "R",
+                "name": "Regensburg"
+            },
+            {
+                "code": "K",
+                "name": "Köln"
+            },
+            {
+                "code": "VER",
+                "name": "Verden"
+            },
+            {
+                "code": "BOT",
+                "name": "Bottrop"
+            }
+        ]
+    },
+    {
+        "wort": "PARKSCHEIBE",
+        "loesung": [
+            {
+                "code": "PA",
+                "name": "Passau"
+            },
+            {
+                "code": "R",
+                "name": "Regensburg"
+            },
+            {
+                "code": "K",
+                "name": "Köln"
+            },
+            {
+                "code": "SC",
+                "name": "Schwabach"
+            },
+            {
+                "code": "HEI",
+                "name": "Heide"
+            },
+            {
+                "code": "B",
+                "name": "Berlin"
+            },
+            {
+                "code": "E",
+                "name": "Essen"
+            }
+        ]
+    },
+    {
+        "wort": "PARKUHR",
+        "loesung": [
+            {
+                "code": "PA",
+                "name": "Passau"
+            },
+            {
+                "code": "R",
+                "name": "Regensburg"
+            },
+            {
+                "code": "KU",
+                "name": "Kulmbach"
+            },
+            {
+                "code": "HR",
+                "name": "Homberg"
+            }
+        ]
+    },
+    {
+        "wort": "PARKKRALLE",
+        "loesung": [
+            {
+                "code": "PA",
+                "name": "Passau"
+            },
+            {
+                "code": "R",
+                "name": "Regensburg"
+            },
+            {
+                "code": "K",
+                "name": "Köln"
+            },
+            {
+                "code": "KR",
+                "name": "Krefeld"
+            },
+            {
+                "code": "A",
+                "name": "Augsburg"
+            },
+            {
+                "code": "LL",
+                "name": "Landsberg/Lech"
+            },
+            {
+                "code": "E",
+                "name": "Essen"
+            }
+        ]
+    },
+    {
+        "wort": "SOMMERREIFEN",
+        "loesung": [
+            {
+                "code": "SO",
+                "name": "Soest"
+            },
+            {
+                "code": "MM",
+                "name": "Memmingen"
+            },
+            {
+                "code": "ER",
+                "name": "Erlangen"
+            },
+            {
+                "code": "R",
+                "name": "Regensburg"
+            },
+            {
+                "code": "EI",
+                "name": "Eichstätt"
+            },
+            {
+                "code": "F",
+                "name": "Frankfurt/Main"
+            },
+            {
+                "code": "EN",
+                "name": "Ennepe-Ruhr-Kreis"
+            }
+        ]
+    },
+    {
+        "wort": "WAGENHEBER",
+        "loesung": [
+            {
+                "code": "W",
+                "name": "Wuppertal"
+            },
+            {
+                "code": "A",
+                "name": "Augsburg"
+            },
+            {
+                "code": "G",
+                "name": "Gera"
+            },
+            {
+                "code": "EN",
+                "name": "Ennepe-Ruhr-Kreis"
+            },
+            {
+                "code": "H",
+                "name": "Hannover"
+            },
+            {
+                "code": "EB",
+                "name": "Eilenburg"
+            },
+            {
+                "code": "ER",
+                "name": "Erlangen"
+            }
+        ]
+    },
+    {
+        "wort": "RESERVERAD",
+        "loesung": [
+            {
+                "code": "R",
+                "name": "Regensburg"
+            },
+            {
+                "code": "ES",
+                "name": "Esslingen"
+            },
+            {
+                "code": "ER",
+                "name": "Erlangen"
+            },
+            {
+                "code": "VER",
+                "name": "Verden"
+            },
+            {
+                "code": "A",
+                "name": "Augsburg"
+            },
+            {
+                "code": "D",
+                "name": "Düsseldorf"
+            }
+        ]
+    },
+    {
+        "wort": "KOFFERRAUM",
+        "loesung": [
+            {
+                "code": "KO",
+                "name": "Koblenz"
+            },
+            {
+                "code": "FF",
+                "name": "Frankfurt/Oder"
+            },
+            {
+                "code": "ER",
+                "name": "Erlangen"
+            },
+            {
+                "code": "RA",
+                "name": "Rastatt"
+            },
+            {
+                "code": "UM",
+                "name": "Uckermark"
+            }
+        ]
+    },
+    {
+        "wort": "RUECKSPIEGEL",
+        "loesung": [
+            {
+                "code": "R",
+                "name": "Regensburg"
+            },
+            {
+                "code": "UE",
+                "name": "Uelzen"
+            },
+            {
+                "code": "C",
+                "name": "Chemnitz"
+            },
+            {
+                "code": "KS",
+                "name": "Kassel"
+            },
+            {
+                "code": "PI",
+                "name": "Pinneberg"
+            },
+            {
+                "code": "E",
+                "name": "Essen"
+            },
+            {
+                "code": "G",
+                "name": "Gera"
+            },
+            {
+                "code": "EL",
+                "name": "Emsland"
+            }
+        ]
+    },
+    {
+        "wort": "BLINKER",
+        "loesung": [
+            {
+                "code": "B",
+                "name": "Berlin"
+            },
+            {
+                "code": "LI",
+                "name": "Lindau"
+            },
+            {
+                "code": "NK",
+                "name": "Neunkirchen"
+            },
+            {
+                "code": "ER",
+                "name": "Erlangen"
+            }
+        ]
+    },
+    {
+        "wort": "SCHEINWERFER",
+        "loesung": [
+            {
+                "code": "SC",
+                "name": "Schwabach"
+            },
+            {
+                "code": "HE",
+                "name": "Helmstedt"
+            },
+            {
+                "code": "IN",
+                "name": "Ingolstadt"
+            },
+            {
+                "code": "WE",
+                "name": "Weimar"
+            },
+            {
+                "code": "R",
+                "name": "Regensburg"
+            },
+            {
+                "code": "F",
+                "name": "Frankfurt/Main"
+            },
+            {
+                "code": "ER",
+                "name": "Erlangen"
+            }
+        ]
+    },
+    {
+        "wort": "STOSSSTANGE",
+        "loesung": [
+            {
+                "code": "ST",
+                "name": "Steinfurt"
+            },
+            {
+                "code": "OS",
+                "name": "Osnabrück"
+            },
+            {
+                "code": "S",
+                "name": "Stuttgart"
+            },
+            {
+                "code": "STA",
+                "name": "Starnberg"
+            },
+            {
+                "code": "N",
+                "name": "Nürnberg"
+            },
+            {
+                "code": "GE",
+                "name": "Gelsenkirchen"
+            }
+        ]
+    },
+    {
+        "wort": "LADESTELLE",
+        "loesung": [
+            {
+                "code": "LA",
+                "name": "Landshut"
+            },
+            {
+                "code": "DE",
+                "name": "Dessau-Roßlau"
+            },
+            {
+                "code": "ST",
+                "name": "Steinfurt"
+            },
+            {
+                "code": "EL",
+                "name": "Emsland"
+            },
+            {
+                "code": "L",
+                "name": "Leipzig"
+            },
+            {
+                "code": "E",
+                "name": "Essen"
+            }
+        ]
+    }
+]
