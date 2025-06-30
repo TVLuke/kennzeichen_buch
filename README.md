@@ -98,6 +98,23 @@ Das Projekt verwendet zwei Hauptdatenquellen:
    Lizenz: Datenlizenz Deutschland Namensnennung 2.0 (https://www.govdata.de/dl-de/by-2-0)  
    Herausgeber: Bundesamt für Kartographie und Geodäsie
 
+## Datenanforderungen
+
+Die folgenden Dateien müssen heruntergeladen und im Projektverzeichnis platziert werden, bevor das Skript ausgeführt werden kann:
+
+1. **CSV-Datei mit KFZ-Kennzeichen**
+   - Herunterladen von: https://github.com/Octoate/KfzKennzeichen/
+   - Dateiname: `kfz-kennz-d.csv`
+   - Platzierung: Im Hauptverzeichnis des Projekts (`/Users/tvluke/projects/kfz kennzeichen/kfz-kennz-d.csv`)
+
+2. **Shapefile der Verwaltungsgrenzen**
+   - Herunterladen von: https://mis.bkg.bund.de/trefferanzeige?docuuid=D7BCF56C-ECDF-4672-9C19-8C668C67E378
+   - Entpacken in: `kfz250.utm32s.shape/kfz250/`
+   - Hauptdatei: `KFZ250.shp` (muss in diesem Pfad liegen: `kfz250.utm32s.shape/kfz250/KFZ250.shp`)
+   - Alle zugehörigen Dateien (.dbf, .prj, .shx, etc.) müssen im selben Verzeichnis liegen
+
+Diese Dateien sind aufgrund von Lizenz- und Größenbeschränkungen nicht im Repository enthalten und müssen separat heruntergeladen werden.
+
 ## Lizenz
 
 ### Code (Python-Skripte)
