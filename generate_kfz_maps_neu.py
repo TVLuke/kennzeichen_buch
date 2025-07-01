@@ -22,7 +22,7 @@ import io
 
 
 # Funktion zum Bearbeiten des PDFs
-def process_pdf(pdf_path, output_path="kfz_sammelbuch_final.pdf"):
+def process_pdf(pdf_path, output_path="kfz_sammelbuch_final.pdf", config=None):
     from PyPDF2 import PdfReader, PdfWriter
     
     print("Bearbeite das PDF...")
@@ -31,45 +31,30 @@ def process_pdf(pdf_path, output_path="kfz_sammelbuch_final.pdf"):
     writer = PdfWriter()
     
     # Füge das Titelbild als erste Seite hinzu
-    title_image_path = "output_maps/kfz_titelbild.png"
+    # Wenn ein Home-Kennzeichen angegeben wurde, versuche zuerst das regionsspezifische Titelbild zu verwenden
+    home_code = ''
+    if config is not None:
+        home_code = config.get('home', '')
+    title_image_path = ""
+    
+    if home_code:
+        region_title_image = f"output_maps/kfz_titelbild_{home_code}.pdf"
+        if os.path.exists(region_title_image):
+            title_image_path = region_title_image
+            print(f"Verwende regionsspezifisches Titelbild für {home_code}: {title_image_path}")
+        else:
+            print(f"Kein regionsspezifisches Titelbild für {home_code} gefunden, verwende Standard-Titelbild.")
+            title_image_path = "output_maps/kfz_titelbild.pdf"
+    else:
+        title_image_path = "output_maps/kfz_titelbild.pdf"
+    
     if os.path.exists(title_image_path):
         print(f"Füge Titelbild hinzu: {title_image_path}")
-        # Öffne das Bild und konvertiere es zu PDF
-        img = Image.open(title_image_path)
-        # Konvertiere das Bild zu RGB, falls es im RGBA-Format ist
-        if img.mode == "RGBA":
-            img = img.convert("RGB")
-        
-        # Skaliere das Bild auf DIN-A4 (595 x 842 Punkte bei 72 DPI)
-        a4_width, a4_height = 595, 842  # A4 Größe in Punkten
-        
-        # Behalte das Seitenverhältnis bei und passe es an A4 an
-        img_width, img_height = img.size
-        width_ratio = a4_width / img_width
-        height_ratio = a4_height / img_height
-        ratio = min(width_ratio, height_ratio)
-        
-        new_width = int(img_width * ratio)
-        new_height = int(img_height * ratio)
-        
-        img = img.resize((new_width, new_height), Image.LANCZOS)
-        
-        # Erstelle ein neues Bild mit A4-Größe und weißem Hintergrund
-        a4_img = Image.new('RGB', (a4_width, a4_height), (255, 255, 255))
-        
-        # Zentriere das skalierte Bild auf dem A4-Blatt
-        paste_x = (a4_width - new_width) // 2
-        paste_y = (a4_height - new_height) // 2
-        a4_img.paste(img, (paste_x, paste_y))
-        
-        # Erstelle ein PDF aus dem Bild
-        img_byte_arr = io.BytesIO()
-        a4_img.save(img_byte_arr, format='PDF')
-        img_byte_arr.seek(0)
-        
-        # Füge das Bild-PDF als erste Seite hinzu
-        title_pdf = PdfReader(img_byte_arr)
-        writer.add_page(title_pdf.pages[0])
+        # Da wir jetzt direkt mit PDF-Dateien arbeiten, können wir das PDF direkt einfügen
+        with open(title_image_path, "rb") as f:
+            title_pdf = PdfReader(f)
+            # Füge die erste Seite des Titelbilds als erste Seite des Hauptdokuments ein
+            writer.add_page(title_pdf.pages[0])
         
         # Füge zwei leere Seiten nach der Titelseite hinzu
         print("Füge zwei leere Seiten nach der Titelseite hinzu")
@@ -161,7 +146,10 @@ def load_config():
     Lädt die Konfigurationsdatei, falls vorhanden.
     Gibt ein Dictionary mit den Konfigurationseinstellungen zurück.
     """
-    config = {"home": None}
+    config = {
+        "home": None,
+        "version": "Version 1.1.0 Aalen Ostalbkreis"
+    }
     config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
     
     if os.path.exists(config_path):
@@ -324,21 +312,43 @@ def create_farthest_from_home_box(code, region_name, distance_km, home_code, hom
     if not region_name or not home_region_name:
         return ""
     
+    # Prüfe, ob die Entfernung gültig ist
+    if not isinstance(distance_km, (int, float)) or distance_km <= 0 or distance_km > 1000 or distance_km != distance_km:  # letzte Bedingung prüft auf NaN
+        print(f"Warnung: Ungültige Entfernung ({distance_km}) für {code} zu {home_code}")
+        return ""
+    
     # Runde die Entfernung auf ganze Kilometer
-    distance_km_rounded = round(distance_km)
+    try:
+        distance_km_rounded = round(distance_km)
+    except (OverflowError, ValueError) as e:
+        print(f"Fehler beim Runden der Entfernung ({distance_km}) für {code}: {e}")
+        return ""
     
     text = f"\\textbf{{{region_name}}} mit dem Kennzeichen \\textbf{{{code}}} ist am weitesten von unserem Zuhause \\textbf{{{home_region_name}}} (\\textbf{{{home_code}}}) entfernt. "
     text += f"Die Entfernung beträgt ungefähr {distance_km_rounded} Kilometer. "
     
-    # Füge einen kindgerechten Vergleich hinzu
-    if distance_km_rounded > 500:
-        text += f"Das ist weiter als von Berlin nach München!"
-    elif distance_km_rounded > 300:
-        text += f"Das ist so weit wie von Hamburg nach Frankfurt!"
-    elif distance_km_rounded > 100:
-        text += f"Das ist so weit wie von Köln nach Frankfurt!"
+    # Berechne Reisezeiten mit verschiedenen Fortbewegungsmitteln
+    auto_stunden = round(distance_km_rounded / 100)  # Bei durchschnittlich 100 km/h
+    fahrrad_stunden = round(distance_km_rounded / 10)  # Bei durchschnittlich 10 km/h
+    zu_fuss_stunden = round(distance_km_rounded / 3)  # Bei durchschnittlich 3 km/h
+    
+    # Formatiere die Zeiten kindgerecht
+    auto_text = f"{auto_stunden} Stunde" if auto_stunden == 1 else f"{auto_stunden} Stunden"
+    fahrrad_text = f"{fahrrad_stunden} Stunde" if fahrrad_stunden == 1 else f"{fahrrad_stunden} Stunden"
+    
+    # Für Fußgänger die Zeit in Tagen angeben, wenn sie zu lang ist
+    if zu_fuss_stunden >= 24:
+        zu_fuss_tage = round(zu_fuss_stunden / 24)
+        zu_fuss_text = f"{zu_fuss_tage} Tag" if zu_fuss_tage == 1 else f"{zu_fuss_tage} Tage"
+        zu_fuss_zusatz = "(wenn man 8 Stunden am Tag läuft)"
     else:
-        text += f"Das ist ungefähr so weit wie {distance_km_rounded // 10} mal um einen großen See zu laufen!"
+        zu_fuss_text = f"{zu_fuss_stunden} Stunde" if zu_fuss_stunden == 1 else f"{zu_fuss_stunden} Stunden"
+        zu_fuss_zusatz = ""
+    
+    # Füge kindgerechte Vergleiche hinzu
+    text += f"Mit dem Auto würde man ungefähr {auto_text} brauchen, "
+    text += f"mit dem Fahrrad {fahrrad_text} "
+    text += f"und zu Fuß sogar {zu_fuss_text} {zu_fuss_zusatz}!"
     
     return create_yellow_box(text)
 
@@ -465,9 +475,8 @@ def find_farthest_region_from_home(all_codes, code_to_region, code_to_name, home
     """
     global farthest_region_from_home
     
-    # Wenn wir die entfernteste Region bereits berechnet haben, geben wir sie zurück
-    if farthest_region_from_home is not None:
-        return farthest_region_from_home
+    # Wir berechnen die entfernteste Region immer neu, um sicherzustellen, dass wir
+    # auch mehrfach vorkommende Kennzeichen korrekt berücksichtigen
     
     # Wenn kein Home-Code konfiguriert ist oder der Home-Code nicht in den Regionen ist
     if not home_code or home_code not in code_to_region:
@@ -493,10 +502,53 @@ def find_farthest_region_from_home(all_codes, code_to_region, code_to_name, home
             region = code_to_region[code]
             if 'geometry' in region and hasattr(region['geometry'], 'centroid'):
                 centroid = region['geometry'].centroid
-                # Berechne die Entfernung in Kilometern (ungefähr)
-                dx = (centroid.x - home_centroid.x) * 111  # ca. 111 km pro Grad Länge
-                dy = (centroid.y - home_centroid.y) * 111  # ca. 111 km pro Grad Breite
-                distance = (dx**2 + dy**2)**0.5
+                # Berechne die Entfernung in Kilometern mit einer robusten Methode
+                try:
+                    # Prüfe, ob die Zentroide gültige Koordinaten haben
+                    if (home_centroid.x is None or home_centroid.y is None or 
+                        centroid.x is None or centroid.y is None):
+                        # Ungültige Koordinaten, überspringe diesen Code
+                        continue
+                    
+                    # Wir gehen davon aus, dass die Daten im Koordinatensystem EPSG:25832 vorliegen
+                        
+                    from shapely.geometry import Point
+                    p1 = Point(home_centroid.x, home_centroid.y)
+                    p2 = Point(centroid.x, centroid.y)
+                    
+                    # Direkte Berechnung der euklidischen Distanz im UTM-Koordinatensystem
+                    # Da EPSG:25832 bereits in Metern ist, ist dies eine genaue Distanz
+                    from math import sqrt
+                    
+                    # Euklidische Distanz berechnen (in Metern)
+                    dx = p2.x - p1.x
+                    dy = p2.y - p1.y
+                    distance_meters = sqrt(dx*dx + dy*dy)
+                    
+                    # Umrechnung in Kilometer
+                    distance = distance_meters / 1000
+                    
+                    # Sanity Check: Distanzen in Deutschland sind < 1000 km
+                    if distance <= 0 or distance > 1000 or not isinstance(distance, (int, float)) or distance != distance:  # letzte Bedingung prüft auf NaN
+                        # Versuche alternative Methode mit GeoPandas
+                        try:
+                            from geopandas import GeoSeries
+                            # Wir erstellen GeoSeries mit dem korrekten CRS
+                            gs1 = GeoSeries([p1], crs="EPSG:25832")
+                            gs2 = GeoSeries([p2], crs="EPSG:25832")
+                            # Da wir bereits im metrischen System sind, ist keine Umrechnung nötig
+                            distance = gs1.distance(gs2)[0] / 1000
+                            
+                            # Nochmaliger Sanity Check
+                            if distance <= 0 or distance > 1000 or not isinstance(distance, (int, float)) or distance != distance:  # letzte Bedingung prüft auf NaN
+                                continue
+                        except Exception as e:
+                            print(f"Fehler bei der alternativen Distanzberechnung für {code}: {e}")
+                            continue
+                except Exception as e:
+                    # Bei Fehlern diese Region überspringen
+                    print(f"Fehler bei der Distanzberechnung für {code}: {e}")
+                    continue
                 
                 if distance > max_distance:
                     max_distance = distance
@@ -771,7 +823,8 @@ def extract_kfz_codes(gdf):
     
     # Dictionaries für Zuordnungen
     code_to_region = {}
-    code_to_name = {}
+    code_to_name = {}  # Kann jetzt mehrere Regionen pro Kennzeichen enthalten
+    code_to_name_multi = {}  # Speichert, ob ein Kennzeichen mehrere Regionen hat
     code_to_state = {}
     code_to_other_codes = {}
     
@@ -806,28 +859,54 @@ def extract_kfz_codes(gdf):
                 shapefile_codes.add(code)
                     
                 # Prüfe, ob der Code bereits verarbeitet wurde
-                if code in regular_codes or code in rare_codes:
-                    continue
+                # Wir überspringen nicht mehr, sondern prüfen auf mehrfache Vorkommen
+                already_processed = code in regular_codes or code in rare_codes
                 
-                # Speichere die Region und andere Codes
-                code_to_region[code] = row
-                
-                # Speichere alle anderen Codes dieser Region
-                other_codes = [c for c in codes if c != code]
-                code_to_other_codes[code] = other_codes
+                # Wenn der Code noch nicht verarbeitet wurde, initialisiere die Einträge
+                if not already_processed:
+                    # Speichere die Region und andere Codes
+                    code_to_region[code] = row
+                    
+                    # Speichere alle anderen Codes dieser Region
+                    other_codes = [c for c in codes if c != code]
+                    code_to_other_codes[code] = other_codes
                 
                 # Prüfe, ob der Code in der CSV-Datei enthalten ist
                 if code in csv_code_to_name:
-                    # Verwende den Namen aus der CSV-Datei
-                    code_to_name[code] = csv_code_to_name[code]
+                    # Prüfe, ob der Code bereits eine Region hat
+                    if code in code_to_name:
+                        # Wenn ja, füge die neue Region hinzu und markiere als mehrfach
+                        existing_name = code_to_name[code]
+                        new_name = csv_code_to_name[code]
+                        if existing_name != new_name:
+                            code_to_name[code] = f"{existing_name} oder {new_name}"
+                            code_to_name_multi[code] = True
+                    else:
+                        # Verwende den Namen aus der CSV-Datei
+                        code_to_name[code] = csv_code_to_name[code]
+                    
                     # Speichere auch das Bundesland
                     code_to_state[code] = csv_code_to_state.get(code, "")
-                    regular_codes.append(code)
+                    
+                    # Füge den Code zu den regulären Codes hinzu, wenn er noch nicht drin ist
+                    if not already_processed:
+                        regular_codes.append(code)
                 else:
-                    # Verwende den Namen aus dem Shapefile
-                    code_to_name[code] = region_name
-                    code_to_state[code] = ""
-                    rare_codes.append(code)
+                    # Prüfe, ob der Code bereits eine Region hat
+                    if code in code_to_name:
+                        # Wenn ja, füge die neue Region hinzu und markiere als mehrfach
+                        existing_name = code_to_name[code]
+                        if existing_name != region_name and region_name:
+                            code_to_name[code] = f"{existing_name} oder {region_name}"
+                            code_to_name_multi[code] = True
+                    else:
+                        # Verwende den Namen aus dem Shapefile
+                        code_to_name[code] = region_name
+                        code_to_state[code] = ""
+                    
+                    # Füge den Code zu den seltenen Codes hinzu, wenn er noch nicht drin ist
+                    if not already_processed and code not in regular_codes:
+                        rare_codes.append(code)
     
     # Füge Codes hinzu, die nur in der CSV-Datei vorkommen
     csv_only_codes = []
@@ -849,7 +928,7 @@ def extract_kfz_codes(gdf):
     print(f"Insgesamt {len(rare_codes)} seltene KFZ-Kennzeichen gefunden ({len(rare_codes) - len(csv_only_codes)} nur im Shapefile, {len(csv_only_codes)} nur in der CSV)")
 
     
-    return regular_codes, rare_codes, code_to_region, code_to_name, code_to_state, code_to_other_codes
+    return regular_codes, rare_codes, code_to_region, code_to_name, code_to_state, code_to_other_codes, code_to_name_multi
 
 
 def create_map_pages(gdf, regular_codes, code_to_region, code_to_name, code_to_state, code_to_other_codes, config=None):
@@ -1085,9 +1164,12 @@ def create_map_pages(gdf, regular_codes, code_to_region, code_to_name, code_to_s
         print(f"Karte gespeichert als: {output_file}")
 
 
-def generate_license_section():
+def generate_license_section(config=None):
     """
     Generiert den LaTeX-Code für den Lizenzabschnitt des Sammelbuchs.
+    
+    Args:
+        config (dict, optional): Konfigurationsdictionary mit Versionsinformation
     
     Returns:
         str: LaTeX-Code für den Lizenzabschnitt
@@ -1109,7 +1191,13 @@ def generate_license_section():
     license_content += r"Lizenz: Datenlizenz Deutschland Namensnennung 2.0 (\url{https://www.govdata.de/dl-de/by-2-0})\\" + "\n"
     license_content += r"Herausgeber: Bundesamt für Kartographie und Geodäsie\\[0.5cm]" + "\n"
     
+    # Füge die Versionsinformation hinzu
+    version_text = "Version 1.1.0 Aalen Ostalbkreis"
+    if config and "version" in config:
+        version_text = config["version"]
+    
     license_content += r"Mein großes Kennzeichen Buch\\" + "\n"
+    license_content += f"\\textbf{{{version_text}}}\\\\" + "\n"
     license_content += r"CC-BY-NC \url{https://creativecommons.org/licenses/by-nc/4.0/deed.de}\\Lukas Ruge" + str(2025) + "\\" + "\n"
     license_content += r"\vspace{1cm}" + "\n"
     license_content += r"\end{minipage}" + "\n"
@@ -1494,7 +1582,7 @@ def generate_puzzle_section(regular_codes, code_to_name, config=None):
     
     return puzzle_content
 
-def generate_latex_template(regular_codes, rare_codes, code_to_name, code_to_state, code_to_other_codes, gdf, code_to_region, config=None, output_file="kfz_sammelbuch.tex"):
+def generate_latex_template(regular_codes, rare_codes, code_to_name, code_to_state, code_to_other_codes, gdf, code_to_region, code_to_name_multi=None, config=None, output_file="kfz_sammelbuch.tex"):
     """
     Generiert eine LaTeX-Vorlage für das Sammelbuch mit Kennzeichen zum Ankreuzen.
     """
@@ -1616,7 +1704,11 @@ def generate_latex_template(regular_codes, rare_codes, code_to_name, code_to_sta
             # Füge die Kennzeichen in die Liste ein
             for code in page_codes:
                 region_name = normalize_text(code_to_name.get(code, ''))
-                latex_content += r"\item \checkbox~\textbf{" + code + r"} " + region_name + "\n"
+                # Füge einen Stern hinzu, wenn das Kennzeichen mehrere Regionen hat
+                if code in code_to_name_multi and code_to_name_multi[code]:
+                    latex_content += r"\item \checkbox~\textbf{" + code + r"}* " + region_name + "\n"
+                else:
+                    latex_content += r"\item \checkbox~\textbf{" + code + r"} " + region_name + "\n"
             
             latex_content += r"\end{enumerate}" + "\n"
             
@@ -1625,12 +1717,22 @@ def generate_latex_template(regular_codes, rare_codes, code_to_name, code_to_sta
                 latex_content += r"\columnbreak" + "\n"
         
         latex_content += r"\end{multicols}" + "\n"
+        
+        # Füge einen Hinweiskasten für seltene Kennzeichen hinzu
+        info_box = create_yellow_box(
+            "Viele der seltenen Kennzeichen waren früher die üblichen Kennzeichen. "
+            "Irgendwann wurden sie abgeschafft, aber seit einigen Jahren darf man sie wieder benutzen. "
+            "Dabei haben sich manchmal die Gebiete geändert. Das Kennzeichen ROL, für \\textbf{Rottenburg an der Laaber}, "
+            "kann daher zum Beispiel an Autos aus Kelheim und aus Landshut stehen. "
+            "Kennzeichen mit einem * können zu mehreren Regionen gehören."
+        )
+        latex_content += info_box + "\n"
     
     # Füge den Rätsel-Abschnitt hinzu
     latex_content += generate_puzzle_section(regular_codes, code_to_name, config)
     
     # Füge die Lizenzinformationen hinzu
-    latex_content += generate_license_section()
+    latex_content += generate_license_section(config)
     
     latex_content += r"\end{document}" + "\n"
     # Speichere die LaTeX-Vorlage in einer Datei
@@ -1710,15 +1812,15 @@ def main(home_code=None, output_suffix=""):
     print("\n")
     
     # Extrahiere die KFZ-Kennzeichen und teile sie in reguläre und seltene auf
-    regular_codes, rare_codes, code_to_region, code_to_name, code_to_state, code_to_other_codes = extract_kfz_codes(gdf)
+    regular_codes, rare_codes, code_to_region, code_to_name, code_to_state, code_to_other_codes, code_to_name_multi = extract_kfz_codes(gdf)
     
     # Erstelle die Karten für die regulären Kennzeichen
     num_regular_pages = create_map_pages(gdf, regular_codes, code_to_region, code_to_name, code_to_state, code_to_other_codes, config)
     
     # Erstelle die LaTeX-Vorlage
     home_code = config.get('home', '')
-    tex_file = f"kfz_sammelbuch_{home_code}{output_suffix}.tex"
-    generate_latex_template(regular_codes, rare_codes, code_to_name, code_to_state, code_to_other_codes, gdf, code_to_region, config, tex_file)
+    tex_file_name = f"kfz_sammelbuch_{home_code}{output_suffix}.tex"
+    tex_file = generate_latex_template(regular_codes, rare_codes, code_to_name, code_to_state, code_to_other_codes, gdf, code_to_region, code_to_name_multi, config, output_file=tex_file_name)
     
     # Kompiliere das LaTeX-Dokument zu PDF
     pdf_file = compile_latex_document(tex_file)
@@ -1727,7 +1829,7 @@ def main(home_code=None, output_suffix=""):
     if pdf_file and os.path.exists(pdf_file):
         home_suffix = f"_{config['home']}" if config.get('home') else ""
         final_pdf = f"kfz_sammelbuch{home_suffix}{output_suffix}_final.pdf"
-        process_pdf(pdf_file, final_pdf)
+        process_pdf(pdf_file, final_pdf, config)
         print(f"\nFertiges Buch erstellt: {final_pdf}")
     else:
         print("\nFehler: LaTeX-Kompilierung fehlgeschlagen oder PDF-Datei wurde nicht gefunden.")

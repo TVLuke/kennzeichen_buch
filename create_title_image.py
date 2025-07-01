@@ -15,6 +15,10 @@ from PIL import Image, ImageDraw, ImageFont
 from wordcloud import WordCloud
 import random
 from shapely.geometry import box
+# Import ReportLab für PDF-Erstellung
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import cm
 
 def load_shapefile(shapefile_path):
     """
@@ -93,12 +97,14 @@ def extract_codes_from_shapefile(gdf):
     
     return all_codes, code_to_region, code_to_geometry, region_to_codes
 
-def create_title_image(gdf, all_codes, code_to_region, code_to_geometry, region_to_codes, output_path):
+def create_title_image(gdf, all_codes, code_to_region, code_to_geometry, region_to_codes, output_path, region_code=None, csv_region_name=None):
     """
     Erstellt ein Titelbild mit farbiger Deutschlandkarte und TagCloud der Regionen.
+    Speichert das Ergebnis als PDF-Datei.
     """
-    # Erstelle eine große Figur für hohe Auflösung
-    plt.figure(figsize=(20, 16), dpi=300)
+    # Erstelle eine Figur in DIN A4-Größe (210 x 297 mm)
+    # Wir verwenden ein Seitenverhältnis von 1:sqrt(2) für DIN A4
+    plt.figure(figsize=(8.27, 11.69))  # 8.27 x 11.69 Zoll = 210 x 297 mm (DIN A4)
     
     # Erstelle zuerst die WordCloud der Regionen
     print("Erstelle WordCloud der Regionen...")
@@ -153,11 +159,19 @@ def create_title_image(gdf, all_codes, code_to_region, code_to_geometry, region_
                     if geom is not None:
                         # Zeichne die Geometrie mit der Farbe des Kennzeichens
                         gpd.GeoSeries([geom], crs=gdf.crs).plot(ax=ax, facecolor=color, edgecolor='white', linewidth=0.2, alpha=0.8)
+                        
+                        # Wenn es das angegebene Kennzeichen ist, zeichne einen roten Punkt im Zentrum
+                        if region_code and code == region_code:
+                            try:
+                                centroid = geom.centroid
+                                ax.scatter(centroid.x, centroid.y, s=120, color='red', marker='o', edgecolors='black', linewidths=1.5, zorder=10)
+                            except Exception as e:
+                                print(f"Fehler beim Zeichnen des Markers: {e}")
     
     # Entferne Achsen und Rahmen
     ax.set_axis_off()
     
-    # Speichere die Karte als temporäre Datei mit transparentem Hintergrund
+    # Speichere die Karte als temporäre PNG-Datei mit transparentem Hintergrund
     temp_map_path = "temp_map.png"
     plt.savefig(temp_map_path, bbox_inches='tight', pad_inches=0, dpi=300, transparent=True)
     plt.close()
@@ -250,108 +264,115 @@ def create_title_image(gdf, all_codes, code_to_region, code_to_geometry, region_
     new_height = int(map_height * 0.7)
     map_img = map_img.resize((new_width, new_height), Image.LANCZOS)
     
-    # Positioniere die Karte unten bündig und mittig
+    # Positioniere die Karte unten bündig und mittig, aber 4 cm (ca. 160 Pixel) höher
     paste_x = (final_img.width - new_width) // 2
-    paste_y = final_img.height - new_height - 50  # 50 Pixel Abstand vom unteren Rand
+    paste_y = final_img.height - new_height - 210  # 210 Pixel Abstand vom unteren Rand (50 + 160)
     
     # Füge die verkleinerte Karte mit Transparenz ein
     final_img.paste(map_img, (paste_x, paste_y), map_img)
     
-    # Füge einen Titel hinzu
+    # Erstelle ein Draw-Objekt für das Bild (wird für andere Operationen benötigt)
     draw = ImageDraw.Draw(final_img)
-    # Versuche verschiedene Schriftarten zu laden
+    
+    # Wir laden keine Schriftarten für das Bild, da wir den Text direkt ins PDF einfügen werden
+    # Der Titel und Untertitel werden später im PDF-Teil hinzugefügt
+    
+    # Wir zeichnen keinen Text auf das Bild, da wir den Text direkt ins PDF einfügen werden
+    # Bestimme den Regionsnamen, wenn ein Kennzeichen angegeben wurde
+    region_text = ""
+    if region_code:
+        # Bevorzuge den Namen aus der CSV-Datei, wenn vorhanden
+        if csv_region_name:
+            region_name = csv_region_name
+        elif region_code in code_to_region:
+            region_name = code_to_region[region_code]
+        else:
+            region_name = None
+            
+        if region_name:
+            region_text = f"{region_name} Edition"
+    
+    # Autor-Text
+    author_text = "von Lukas Ruge"
+    
+    # Speichere das finale Bild als temporäre Datei
+    temp_img_path = "temp_final_img.png"
     try:
-        # Liste möglicher Schriftarten
-        font_paths = [
-            '/System/Library/Fonts/Helvetica.ttc',
-            '/System/Library/Fonts/Arial.ttf',
-            '/Library/Fonts/Arial.ttf',
-            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
-        ]
-        
-        # Versuche, eine der Schriftarten zu laden
-        title_font = None
-        subtitle_font = None
-        
-        for path in font_paths:
-            if os.path.exists(path):
-                title_font = ImageFont.truetype(path, 140)  # Größere Schrift
-                subtitle_font = ImageFont.truetype(path, 90)  # Größere Schrift
-                break
-                
-        # Wenn keine Schriftart gefunden wurde, verwende die Standardschriftart
-        if title_font is None:
-            title_font = ImageFont.load_default()
-            subtitle_font = ImageFont.load_default()
-    except:
-        # Fallback zu Standardschriftart
-        title_font = ImageFont.load_default()
-        subtitle_font = ImageFont.load_default()
-    
-    title = "Mein großes Kennzeichen Buch"
-    subtitle = "Ein Sammelbuch für deutsche Autokennzeichen"
-    
-    # Positioniere den Titel oben mittig mit mehr Abstand nach unten
-    # Verwende textlength für die Breite und schätze die Höhe basierend auf der Schriftgröße
-    title_width = draw.textlength(title, font=title_font)
-    title_height = title_font.size
-    subtitle_width = draw.textlength(subtitle, font=subtitle_font)
-    subtitle_height = subtitle_font.size
-    
-    # Mehr Abstand vom oberen Rand
-    top_margin = 100
-    
-    # Füge einen Schatten hinzu für bessere Lesbarkeit
-    shadow_offset = 3
-    try:
-        draw.text(((final_img.width - title_width) // 2 + shadow_offset, top_margin + shadow_offset), 
-                title, font=title_font, fill=(50, 50, 50, 200))
-        draw.text(((final_img.width - subtitle_width) // 2 + shadow_offset, top_margin + title_height + 30 + shadow_offset), 
-                subtitle, font=subtitle_font, fill=(50, 50, 50, 200))
-    except Exception as e:
-        print(f"Warnung beim Zeichnen des Schattens: {e}")
-    
-    # Zeichne den Text
-    try:
-        draw.text(((final_img.width - title_width) // 2, top_margin), 
-                title, font=title_font, fill=(0, 0, 0, 255))
-        draw.text(((final_img.width - subtitle_width) // 2, top_margin + title_height + 30), 
-                subtitle, font=subtitle_font, fill=(0, 0, 0, 255))
-    except Exception as e:
-        print(f"Warnung beim Zeichnen des Textes: {e}")
-        # Fallback: Zeichne Text ohne Positionierung
-        try:
-            draw.text((50, top_margin), title, font=title_font, fill=(0, 0, 0, 255))
-            draw.text((50, top_margin + 100), subtitle, font=subtitle_font, fill=(0, 0, 0, 255))
-        except:
-            print("Konnte Text nicht zeichnen.")
-    
-    # Speichere das finale Bild
-    try:
-        final_img.save(output_path, format='PNG', dpi=(300, 300))
+        final_img.save(temp_img_path, format='PNG', dpi=(300, 300))
     except Exception as e:
         print(f"Fehler beim Speichern mit DPI: {e}")
         # Fallback ohne DPI-Angabe
-        final_img.save(output_path, format='PNG')
+        final_img.save(temp_img_path, format='PNG')
+    
+    # Erstelle ein PDF mit ReportLab
+    # Stelle sicher, dass die Ausgabedatei die Endung .pdf hat
+    if not output_path.lower().endswith('.pdf'):
+        pdf_output_path = output_path.rsplit('.', 1)[0] + '.pdf'
+    else:
+        pdf_output_path = output_path
+    
+    # Erstelle ein neues PDF in DIN A4-Größe
+    c = canvas.Canvas(pdf_output_path, pagesize=A4)
+    width, height = A4  # A4 ist 210 x 297 mm
+    
+    # Füge das Bild ins PDF ein
+    # Konvertiere zu RGB für PDF-Kompatibilität
+    img = Image.open(temp_img_path)
+    if img.mode == 'RGBA':
+        img = img.convert('RGB')
+    
+    # Füge das Bild ins PDF ein (ohne Text)
+    c.drawImage(temp_img_path, 0, 0, width, height)
+    
+    # Füge den Text direkt ins PDF ein
+    # Titel
+    c.setFont("Helvetica-Bold", 36)
+    c.drawCentredString(width/2, height - 3*cm, "Mein großes Kennzeichen Buch")
+    
+    # Untertitel
+    c.setFont("Helvetica", 24)
+    c.drawCentredString(width/2, height - 4*cm, "Ein Sammelbuch für deutsche Autokennzeichen")
+    
+    # Wenn eine Region angegeben wurde, füge sie unten ein
+    if region_text:
+        c.setFont("Helvetica", 18)
+        c.drawCentredString(width/2, 3*cm, region_text)
+    
+    # Füge den Autor hinzu
+    c.setFont("Helvetica", 12)
+    c.drawCentredString(width/2, 2*cm, author_text)
+    
+    # Speichere das PDF
+    c.save()
     
     # Lösche temporäre Dateien
     os.remove(temp_map_path)
     os.remove(temp_cloud_path)
+    os.remove(temp_img_path)
     
-    print(f"Titelbild erfolgreich erstellt: {output_path}")
-    return output_path
+    print(f"Titelbild erfolgreich als PDF erstellt: {pdf_output_path}")
+    return pdf_output_path
 
 def main():
     # Pfade
     shapefile_path = "kfz250.utm32s.shape/kfz250/KFZ250.shp"
     output_dir = "output_maps"
-    output_path = os.path.join(output_dir, "kfz_titelbild.png")
+    output_path = os.path.join(output_dir, "kfz_titelbild.pdf")
+    region_code = None
+    
+    # Prüfe, ob ein Kennzeichen als Argument übergeben wurde
+    if len(sys.argv) > 1:
+        region_code = sys.argv[1]
+        # Wenn ein Kennzeichen angegeben wurde, passe den Ausgabepfad an
+        output_path = os.path.join(output_dir, f"kfz_titelbild_{region_code}.pdf")
     
     # Erstelle Output-Verzeichnis, falls es nicht existiert
     os.makedirs(output_dir, exist_ok=True)
     
     print("=" * 80)
     print("Erstelle Titelbild für das KFZ-Kennzeichen Sammelbuch")
+    if region_code:
+        print(f"Region: {region_code}")
     print("=" * 80)
     
     # Lade Shapefile
@@ -363,8 +384,13 @@ def main():
     # Extrahiere Kennzeichen
     all_codes, code_to_region, code_to_geometry, region_to_codes = extract_codes_from_shapefile(gdf)
     
+    # Prüfe, ob das angegebene Kennzeichen gültig ist
+    if region_code and region_code not in code_to_region:
+        print(f"Warnung: Kennzeichen '{region_code}' nicht gefunden. Erstelle allgemeines Titelbild.")
+        region_code = None
+    
     # Erstelle Titelbild
-    title_image_path = create_title_image(gdf, all_codes, code_to_region, code_to_geometry, region_to_codes, output_path)
+    title_image_path = create_title_image(gdf, all_codes, code_to_region, code_to_geometry, region_to_codes, output_path, region_code)
     
     print(f"Titelbild wurde erstellt: {title_image_path}")
     print("Dieses Bild kann nun als Titelbild für das Sammelbuch verwendet werden.")
