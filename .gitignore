@@ -27,6 +27,10 @@ venv/
 ENV/
 env/
 
+# Generierte PDF-Dateien
+all_books/
+*.pdf
+
 # Jupyter Notebook
 .ipynb_checkpoints
 

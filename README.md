@@ -4,6 +4,8 @@
 
 Ein Sammelbuch für deutsche Autokennzeichen mit Karten, Checklisten und Rätseln. Zielgruppe sind Kinder im Alter von sechs oder sieben Jahren, da in diesem Alter häufig eine Faszination für Autokennzeichen entsteht. Das Buch enthält einfache Rätsel und kurze Texte und hilft beim Erkennen von Buchstaben und beim Lesenlernen.
 
+Die fertigen PDF-Bücher für alle deutschen Kennzeichen sind in einem separaten Repository verfügbar: [KFZ-Kennzeichen Sammelbücher](https://github.com/TVLuke/kennzeichen_buecher). Für jedes Kennzeichen gibt es ein individuelles Buch mit regionalspezifischen Informationen.
+
 ## Beschreibung
 
 Dieses Projekt erstellt ein PDF-Sammelbuch für deutsche KFZ-Kennzeichen. Das Buch enthält:
