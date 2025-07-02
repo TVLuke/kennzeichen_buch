@@ -1193,7 +1193,7 @@ def generate_license_section(config=None):
     license_content += r"Herausgeber: Bundesamt für Kartographie und Geodäsie\\[0.5cm]" + "\n"
     
     # Füge die Versionsinformation hinzu
-    version_text = "Version 1.1.0 Aalen Ostalbkreis"
+    version_text = "Version 1.2.0 Aschaffenburg"
     if config and "version" in config:
         version_text = config["version"]
     
