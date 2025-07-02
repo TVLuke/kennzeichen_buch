@@ -20,7 +20,7 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 - Fehler bei der Berechnung der Distanz zwischen Orten korrigiert
 - Falsche Annahme: Ein kennzeichen kann nur ein mal auftauchen. Das stimmt aber nicht weil "Erste Verordnung zur Änderung der Fahrzeug-Zulassungsverordnung und anderer straßenverkehrsrechtlicher Vorschriften"
 
-## [[1.0](https://github.com/TVLuke/kennzeichen_buch/releases/tag/v1.0) "Augsburg" - 2025-06-30
+## [[1.0]](https://github.com/TVLuke/kennzeichen_buch/releases/tag/v1.0) "Augsburg" - 2025-06-30
 
 ### Hinzugefügt
 - Erste vollständige Version des KFZ-Kennzeichen Sammelbuchs
