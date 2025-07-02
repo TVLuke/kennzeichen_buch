@@ -125,7 +125,7 @@ Diese Dateien sind aufgrund von Lizenz- und Größenbeschränkungen nicht im Rep
 Die Python-Skripte in diesem Projekt stehen unter der **MIT-Lizenz**.
 
 ### Inhalte (PDF und Bilder in output_maps)
-Das generierte PDF und die Bilder im Verzeichnis `output_maps` sind unter der **[Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/** lizenziert.
+Das generierte PDF und die Bilder im Verzeichnis `output_maps` sind unter der **[Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/)** lizenziert.
 
 ## Note on Use of LLMs
 
