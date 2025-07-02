@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
 
+## [[1.2.0]](https://github.com/TVLuke/kennzeichen_buch/releases/tag/v1.2.0) "Aschaffenburg" - 2025-07-02
+
+### Hinzugefügt
+- Jetzt auch SVG Bilder von Kennzeichen
+
+### Verbessert
+- Titelbild.
+
+### Korrigiert
+- Mehr als ein München sind zu viele München. Kennzeichen konnten in mehreren Regionen vorkommen, und dann wurden auch mehrere Punkte aufs Titelbild gesetzt.
+
 ## [[1.1.0]](https://github.com/TVLuke/kennzeichen_buch/releases/tag/v1.1.0) "Aalen Ostalbkreis" - 2025-07-01
 
 ### Hinzugefügt

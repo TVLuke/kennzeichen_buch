@@ -690,7 +690,7 @@ def create_special_fact_box(code):
     
     return create_yellow_box(text)
 
-def get_info_box_for_page(page_num, page_codes, gdf, code_to_region, code_to_name, code_to_state, code_to_other_codes, config):
+def get_info_box_for_page(page_num, page_codes, gdf, code_to_region, code_to_name, code_to_state, code_to_other_codes, config, code_to_name_multi=None):
     """
     Generiert einen gelben Infokasten für die Seite basierend auf den Kennzeichen auf dieser Seite.
     Priorisiert die verschiedenen Arten von Kästen in der folgenden Reihenfolge:
@@ -699,6 +699,7 @@ def get_info_box_for_page(page_num, page_codes, gdf, code_to_region, code_to_nam
     3. Größte Region in Deutschland (nur einmal im Buch)
     4. Extreme Position (Nördlichste, Südlichste, Westlichste, Östlichste)
     5. Kennzeichen mit einem Buchstaben, der mit dem Anfangsbuchstaben der Region übereinstimmt
+    6. Kennzeichen mit mehreren Regionen
     """
     # Prüfe, ob ein Home-Kennzeichen konfiguriert ist
     home_code = None
@@ -1675,7 +1676,7 @@ def generate_latex_template(regular_codes, rare_codes, code_to_name, code_to_sta
         latex_content += r"\end{center}" + "\n\n"
         
         # Füge den Informationskasten hinzu, falls vorhanden
-        info_box = get_info_box_for_page(page, page_codes, gdf, code_to_region, code_to_name, code_to_state, code_to_other_codes, config)
+        info_box = get_info_box_for_page(page, page_codes, gdf, code_to_region, code_to_name, code_to_state, code_to_other_codes, config, code_to_name_multi)
         if info_box:
             latex_content += info_box + "\n"
     
@@ -1781,18 +1782,29 @@ def compile_latex_document(tex_file):
         return False
 
 
-def main(home_code=None, output_suffix=""):
+def find_multi_region_codes(code_to_name):
     """
-    Hauptfunktion zum Ausführen des Skripts.
+    Findet alle Kennzeichen, die in mehreren Regionen vorkommen.
+    """
+    multi_region_codes = {}
     
-    Args:
-        home_code (str, optional): Das Kennzeichen, das als Home markiert werden soll.
-                                   Überschreibt die Einstellung in der Konfigurationsdatei.
-        output_suffix (str, optional): Ein Suffix für die Ausgabedateien.
+    for code, name in code_to_name.items():
+        if ' oder ' in name:
+            regions = name.split(' oder ')
+            if len(regions) > 1:
+                multi_region_codes[code] = regions
+    
+    return multi_region_codes
+
+
+def main(home_code=None, output_suffix="", debug_multi_regions=False):
+    """
+    Hauptfunktion zum Erstellen des Sammelbuchs und der Karten.
     """
     print("KFZ-Kennzeichen Kartengenerator für Kinderbuch")
     print("=============================================\n")
     
+    # Konfiguration laden
     # Lade die Konfiguration
     config = load_config()
     
@@ -1811,8 +1823,20 @@ def main(home_code=None, output_suffix=""):
         print(f"  {col}: {val}")
     print("\n")
     
-    # Extrahiere die KFZ-Kennzeichen und teile sie in reguläre und seltene auf
+    # Extrahiere die KFZ-Kennzeichen und Zuordnungen
     regular_codes, rare_codes, code_to_region, code_to_name, code_to_state, code_to_other_codes, code_to_name_multi = extract_kfz_codes(gdf)
+    
+    # Debug: Finde und zeige Kennzeichen mit mehreren Regionen
+    if debug_multi_regions or True:  # Immer aktiviert für Debugging
+        multi_region_codes = find_multi_region_codes(code_to_name)
+        print(f"\nGefundene Kennzeichen mit mehreren Regionen: {len(multi_region_codes)}")
+        for code, regions in multi_region_codes.items():
+            print(f"  - {code}: {', '.join(regions)}")
+        print()
+    
+    # Sortiere die Kennzeichen alphabetisch
+    regular_codes.sort()
+    rare_codes.sort()
     
     # Erstelle die Karten für die regulären Kennzeichen
     num_regular_pages = create_map_pages(gdf, regular_codes, code_to_region, code_to_name, code_to_state, code_to_other_codes, config)

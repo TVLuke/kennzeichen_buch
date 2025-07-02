@@ -15,6 +15,7 @@ from PIL import Image, ImageDraw, ImageFont
 from wordcloud import WordCloud
 import random
 from shapely.geometry import box
+import subprocess
 # Import ReportLab für PDF-Erstellung
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
@@ -102,6 +103,41 @@ def create_title_image(gdf, all_codes, code_to_region, code_to_geometry, region_
     Erstellt ein Titelbild mit farbiger Deutschlandkarte und TagCloud der Regionen.
     Speichert das Ergebnis als PDF-Datei.
     """
+    
+    # Debug-Ausgabe für das übergebene Kennzeichen
+    if region_code:
+        print(f"\nDEBUG: Informationen für Kennzeichen {region_code}:")
+        # Finde alle Regionen mit diesem Kennzeichen
+        regions_with_code = [region for region, codes in region_to_codes.items() if region_code in codes]
+        print(f"DEBUG: Gefundene Regionen mit Kennzeichen {region_code}: {regions_with_code}")
+        print(f"DEBUG: Anzahl der Regionen mit Kennzeichen {region_code}: {len(regions_with_code)}")
+        
+        # Prüfe, ob es Geometrien für dieses Kennzeichen gibt
+        geom = code_to_geometry.get(region_code)
+        if geom is not None:
+            print(f"DEBUG: Geometrie für {region_code} gefunden")
+        else:
+            print(f"DEBUG: Keine Geometrie für {region_code} gefunden")
+            
+        # Finde die beste Region für die Markierung
+        # Bevorzuge eine Region, die nur das gesuchte Kennzeichen hat
+        selected_region_for_marker = None
+        
+        # Zuerst suchen wir nach einer Region, die NUR das gesuchte Kennzeichen hat
+        for region, codes in region_to_codes.items():
+            if region_code in codes and len(codes) == 1:
+                selected_region_for_marker = region
+                print(f"DEBUG: Region {region} hat nur das Kennzeichen {region_code} - wird bevorzugt")
+                break
+        
+        # Wenn keine Region gefunden wurde, die nur das gesuchte Kennzeichen hat,
+        # nehmen wir die erste Region mit diesem Kennzeichen
+        if selected_region_for_marker is None and regions_with_code:
+            selected_region_for_marker = regions_with_code[0]
+            print(f"DEBUG: Keine Region mit nur diesem Kennzeichen gefunden, wähle erste Region: {selected_region_for_marker}")
+        
+        print(f"DEBUG: Ausgewählte Region für Markierung: {selected_region_for_marker}")
+
     # Erstelle eine Figur in DIN A4-Größe (210 x 297 mm)
     # Wir verwenden ein Seitenverhältnis von 1:sqrt(2) für DIN A4
     plt.figure(figsize=(8.27, 11.69))  # 8.27 x 11.69 Zoll = 210 x 297 mm (DIN A4)
@@ -154,19 +190,30 @@ def create_title_image(gdf, all_codes, code_to_region, code_to_geometry, region_
             geometries = [code_to_geometry.get(c) for c in codes if c in code_to_geometry]
             geometries = [g for g in geometries if g is not None]
             
+            # Zeichne alle Geometrien dieser Region
             if geometries:
                 for geom in geometries:
                     if geom is not None:
                         # Zeichne die Geometrie mit der Farbe des Kennzeichens
                         gpd.GeoSeries([geom], crs=gdf.crs).plot(ax=ax, facecolor=color, edgecolor='white', linewidth=0.2, alpha=0.8)
-                        
-                        # Wenn es das angegebene Kennzeichen ist, zeichne einen roten Punkt im Zentrum
-                        if region_code and code == region_code:
-                            try:
-                                centroid = geom.centroid
-                                ax.scatter(centroid.x, centroid.y, s=120, color='red', marker='o', edgecolors='black', linewidths=1.5, zorder=10)
-                            except Exception as e:
-                                print(f"Fehler beim Zeichnen des Markers: {e}")
+    
+    # Setze einen Marker für die ausgewählte Region, falls eine gefunden wurde
+    if region_code and selected_region_for_marker:
+        # Hole die Codes für die ausgewählte Region
+        region_codes = region_to_codes.get(selected_region_for_marker, [])
+        
+        # Finde die Geometrie für das gesuchte Kennzeichen in dieser Region
+        if region_code in region_codes and region_code in code_to_geometry:
+            geom = code_to_geometry[region_code]
+            if geom is not None:
+                try:
+                    centroid = geom.centroid
+                    print(f"DEBUG: Markiere Punkt für Region {selected_region_for_marker} mit Kennzeichen {region_code} bei Koordinaten {centroid.x}, {centroid.y}")
+                    ax.scatter(centroid.x, centroid.y, s=120, color='red', marker='o', edgecolors='black', linewidths=1.5, zorder=10)
+                except Exception as e:
+                    print(f"Fehler beim Zeichnen des Markers: {e}")
+        else:
+            print(f"DEBUG: Keine Geometrie für Kennzeichen {region_code} in Region {selected_region_for_marker} gefunden")
     
     # Entferne Achsen und Rahmen
     ax.set_axis_off()
@@ -271,6 +318,79 @@ def create_title_image(gdf, all_codes, code_to_region, code_to_geometry, region_
     # Füge die verkleinerte Karte mit Transparenz ein
     final_img.paste(map_img, (paste_x, paste_y), map_img)
     
+    # Erstelle ein Kennzeichen-Bild, wenn ein Kennzeichen angegeben wurde
+    if region_code and len(region_code) <= 3:
+        try:
+            # Bestimme die Position des Ortes (Nord/Süd)
+            is_south = False
+            if region_code in code_to_geometry:
+                geom = code_to_geometry[region_code]
+                if geom is not None:
+                    # Berechne den Schwerpunkt der Geometrie
+                    centroid = geom.centroid
+                    # Bestimme, ob der Ort in Süddeutschland liegt (y-Koordinate kleiner als Mittelpunkt)
+                    # Die genaue Grenze hängt vom Koordinatensystem ab, hier ein Beispielwert
+                    map_center_y = gdf.total_bounds[1] + (gdf.total_bounds[3] - gdf.total_bounds[1]) / 2
+                    is_south = centroid.y < map_center_y
+            
+            # Generiere das Kennzeichen-Bild mit unserem Skript
+            temp_license_plate = 'temp_license_plate.png'
+            script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'generate_license_plate.py')
+            
+            # Führe das Skript aus - die SVG-Vorlage wird automatisch basierend auf der Länge des Kennzeichens ausgewählt
+            cmd = [sys.executable, script_path, region_code, '--output', temp_license_plate]
+            subprocess.run(cmd, check=True)
+            
+            # Lade das Kennzeichen-Bild
+            if os.path.exists(temp_license_plate):
+                license_img = Image.open(temp_license_plate)
+                license_img = license_img.convert('RGBA')
+                
+                # Skaliere das Kennzeichen auf eine angemessene Größe (ca. 60% der Kartenbreite)
+                license_width = int(new_width * 0.6)
+                license_height = int(license_width * license_img.height / license_img.width)
+                license_img = license_img.resize((license_width, license_height), Image.LANCZOS)
+                
+                # Wähle einen zufälligen Neigungswinkel zwischen -10 und +10 Grad
+                rotation_angle = random.uniform(-10, 10)
+                license_img = license_img.rotate(rotation_angle, resample=Image.BICUBIC, expand=True, fillcolor=(0, 0, 0, 0))
+                
+                # Nach der Rotation könnte sich die Größe geändert haben
+                rotated_width, rotated_height = license_img.size
+                
+                # Positioniere das Kennzeichen abhängig von der Position der Deutschlandkarte
+                # und ob der Ort im Norden oder Süden liegt
+                
+                # Horizontale Zentrierung
+                license_x = (final_img.width - rotated_width) // 2
+                
+                # Die Position der Deutschlandkarte ist durch paste_y und new_height definiert
+                # paste_y ist die obere Kante der Karte
+                # new_height ist die Höhe der Karte
+                
+                # Teile die Karte in Drittel
+                map_top = paste_y
+                map_bottom = paste_y + new_height
+                map_height = new_height
+                map_third = map_height / 3
+                
+                if is_south:
+                    # Für süddeutsche Kennzeichen: Platziere im oberen Drittel der Karte
+                    # Mitte des oberen Drittels = obere Kante + 1/6 der Höhe
+                    target_center_y = map_top + map_third / 2
+                else:
+                    # Für norddeutsche Kennzeichen: Platziere im unteren Drittel der Karte
+                    # Mitte des unteren Drittels = obere Kante + 5/6 der Höhe
+                    target_center_y = map_bottom - map_third / 2
+                
+                # Positioniere das Kennzeichen so, dass seine Mitte auf der berechneten Position liegt
+                license_y = int(target_center_y - rotated_height / 2)
+                
+                # Füge das Kennzeichen ein
+                final_img.paste(license_img, (license_x, license_y), license_img)
+        except Exception as e:
+            print(f"Fehler beim Erstellen des Kennzeichen-Bildes: {e}")
+    
     # Erstelle ein Draw-Objekt für das Bild (wird für andere Operationen benötigt)
     draw = ImageDraw.Draw(final_img)
     
@@ -349,6 +469,10 @@ def create_title_image(gdf, all_codes, code_to_region, code_to_geometry, region_
     os.remove(temp_map_path)
     os.remove(temp_cloud_path)
     os.remove(temp_img_path)
+    
+    # Lösche temporäre Kennzeichen-Datei, falls vorhanden
+    if 'temp_license_plate.png' in locals() and os.path.exists('temp_license_plate.png'):
+        os.remove('temp_license_plate.png')
     
     print(f"Titelbild erfolgreich als PDF erstellt: {pdf_output_path}")
     return pdf_output_path

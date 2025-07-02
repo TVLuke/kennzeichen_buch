@@ -119,6 +119,8 @@ Die folgenden Dateien musst du herunterladen und im Projektverzeichnis platziere
 
 Diese Dateien sind aufgrund von Lizenz- und Größenbeschränkungen nicht im Repository enthalten und müssen separat heruntergeladen werden.
 
+Die Schrift Europlate.tff ist von https://www.andyhoppe.com/design/fonts/euro-plate-font/ und kann für private Zwecke frei verwendet werden.
+
 ## Lizenz
 
 ### Code (Python-Skripte)
