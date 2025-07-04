@@ -2,7 +2,7 @@
 
 Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
 
-## [[1.3.0]](https://github.com/TVLuke/kennzeichen_buch/releases/tag/1.3.0) "Aachen" - 2025-07-03
+## [[1.3.0]](https://github.com/TVLuke/kennzeichen_buch/releases/tag/1.3) "Aachen" - 2025-07-03
 
 ### Verbessert
 - Seltene Kennzeichen nutzen nun eine weitere CSV Datei um Regionsnamen zu finden, welche tatsächlich mit dem Kürzel etwas zu tun haben.
