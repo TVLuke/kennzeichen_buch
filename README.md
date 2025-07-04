@@ -108,14 +108,22 @@ Die folgenden Dateien musst du herunterladen und im Projektverzeichnis platziere
 
 1. **CSV-Datei mit KFZ-Kennzeichen**
    - Herunterladen von: https://github.com/Octoate/KfzKennzeichen/
-   - Dateiname: `kfz-kennz-d.csv`
-   - Platzierung: Im Hauptverzeichnis des Projekts (`/Users/tvluke/projects/kfz kennzeichen/kfz-kennz-d.csv`)
+   - Dateiname: `kfzkennzeichen-deutschland.csv`
+   - Platzierung: Im Hauptverzeichnis des Projekts (`/Users/tvluke/projects/kfz kennzeichen/kfzkennzeichen-deutschland.csv`)
+   - [MIT Licence](https://github.com/Octoate/KfzKennzeichen/blob/master/LICENSE)
 
 2. **Shapefile der Verwaltungsgrenzen**
    - Herunterladen von: https://mis.bkg.bund.de/trefferanzeige?docuuid=D7BCF56C-ECDF-4672-9C19-8C668C67E378
    - Entpacken in: `kfz250.utm32s.shape/kfz250/`
    - Hauptdatei: `KFZ250.shp` (muss in diesem Pfad liegen: `kfz250.utm32s.shape/kfz250/KFZ250.shp`)
    - Alle zugehörigen Dateien (.dbf, .prj, .shx, etc.) müssen im selben Verzeichnis liegen
+   - [Datenlizenz Deutschland Namensnennung 2.0](https://www.govdata.de/dl-de/by-2-0)
+
+3. **Weitere CSV Datei der Kfz Kennzeichen**
+   - https://www.govdata.de/suche/daten/kfz-kennzeichen-deutschland3785e
+   - Dateiname: `kfz-kennz-d.csv`
+   - Platzierung: Im Hauptverzeichnis des Projekts (`/Users/tvluke/projects/kfz kennzeichen/kfz-kennz-d.csv`)
+   - [CC-BY 4.0](https://opendefinition.org/licenses/cc-by/) "Berlin Open Data"
 
 Diese Dateien sind aufgrund von Lizenz- und Größenbeschränkungen nicht im Repository enthalten und müssen separat heruntergeladen werden.
 
