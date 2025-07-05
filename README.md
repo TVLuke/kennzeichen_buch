@@ -109,7 +109,7 @@ Die folgenden Dateien musst du herunterladen und im Projektverzeichnis platziere
 1. **CSV-Datei mit KFZ-Kennzeichen**
    - Herunterladen von: https://github.com/Octoate/KfzKennzeichen/
    - Dateiname: `kfzkennzeichen-deutschland.csv`
-   - Platzierung: Im Hauptverzeichnis des Projekts (`/Users/tvluke/projects/kfz kennzeichen/kfzkennzeichen-deutschland.csv`)
+   - Platzierung: Im Hauptverzeichnis des Projekts (`kfzkennzeichen-deutschland.csv`)
    - [MIT Licence](https://github.com/Octoate/KfzKennzeichen/blob/master/LICENSE)
 
 2. **Shapefile der Verwaltungsgrenzen**
@@ -122,7 +122,7 @@ Die folgenden Dateien musst du herunterladen und im Projektverzeichnis platziere
 3. **Weitere CSV Datei der Kfz Kennzeichen**
    - https://www.govdata.de/suche/daten/kfz-kennzeichen-deutschland3785e
    - Dateiname: `kfz-kennz-d.csv`
-   - Platzierung: Im Hauptverzeichnis des Projekts (`/Users/tvluke/projects/kfz kennzeichen/kfz-kennz-d.csv`)
+   - Platzierung: Im Hauptverzeichnis des Projekts (`kfz-kennz-d.csv`)
    - [CC-BY 4.0](https://opendefinition.org/licenses/cc-by/) "Berlin Open Data"
 
 Diese Dateien sind aufgrund von Lizenz- und Größenbeschränkungen nicht im Repository enthalten und müssen separat heruntergeladen werden.

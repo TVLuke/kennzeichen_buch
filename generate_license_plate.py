@@ -78,7 +78,7 @@ def main():
     parser.add_argument('--svg', 
                         help='Pfad zur SVG-Vorlage. Wenn nicht angegeben, wird automatisch basierend auf der Länge des Kennzeichens ausgewählt.')
     parser.add_argument('--output', help='Pfad für die Ausgabedatei')
-    parser.add_argument('--font', default='/Users/tvluke/projects/kfz kennzeichen/EuroPlate.ttf',
+    parser.add_argument('--font', default='EuroPlate.ttf',
                         help='Pfad zur Schriftartdatei')
     
     args = parser.parse_args()

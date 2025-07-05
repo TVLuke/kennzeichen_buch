@@ -15,8 +15,8 @@ OUTPUT_DIR = "output_maps"  # Verzeichnis für die Ausgabedateien
 CODES_PER_PAGE = 20    # Anzahl der Kennzeichen pro Seite für reguläre Kennzeichen
 RARE_CODES_PER_PAGE = 60  # Anzahl der Kennzeichen pro Seite für seltene Kennzeichen
 SHAPEFILE_PATH = "kfz250.utm32s.shape/kfz250/KFZ250.shp"
-CSV_PATH = "/Users/tvluke/projects/kfz kennzeichen/kfz-kennz-d.csv"
-CSV_PATH_OCTOATE = "/Users/tvluke/projects/kfz kennzeichen/kfzkennzeichen-deutschland.csv"
+CSV_PATH = "kfz-kennz-d.csv"
+CSV_PATH_OCTOATE = "kfzkennzeichen-deutschland.csv"
 PAGE_WIDTH = 8.27  # DIN-A4 Breite in Zoll
 PAGE_HEIGHT = 11.69  # DIN-A4 Höhe in Zoll
 

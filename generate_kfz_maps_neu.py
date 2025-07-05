@@ -106,8 +106,8 @@ import random
 
 # Konstanten
 SHAPEFILE_PATH = "kfz250.utm32s.shape/kfz250/KFZ250.shp"
-CSV_PATH = "/Users/tvluke/projects/kfz kennzeichen/kfz-kennz-d.csv"
-CSV_PATH_OCTOATE = "/Users/tvluke/projects/kfz kennzeichen/kfzkennzeichen-deutschland.csv"
+CSV_PATH = "kfz-kennz-d.csv"
+CSV_PATH_OCTOATE = "kfzkennzeichen-deutschland.csv"
 OUTPUT_DIR = "output_maps"
 CODES_PER_PAGE = 20  # Anzahl der Kennzeichen pro Seite
 RARE_CODES_PER_PAGE = 60  # Anzahl der seltenen Kennzeichen pro Seite
