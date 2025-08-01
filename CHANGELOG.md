@@ -2,6 +2,16 @@
 
 Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
 
+## [[1.9.3]](https://github.com/TVLuke/kennzeichen_buch/releases/tag/1.9.3) "Aichach-Friedberg" - 2025-08-01
+
+### Korrigiert
+- Ah, BK ist AUßERDEM auch "Börde" in Sachsen Anhalt. Das macht Dinge komplexer.
+
+## [[1.5.0]](https://github.com/TVLuke/kennzeichen_buch/releases/tag/1.5) "Auerbach" - 2025-08-01
+
+### Korrigiert
+- Im Datensatz kfz-kenz-d.csv war BK fälschlich Bochum. 
+
 ## [[1.3.0]](https://github.com/TVLuke/kennzeichen_buch/releases/tag/1.3) "Aachen" - 2025-07-03
 
 ### Verbessert

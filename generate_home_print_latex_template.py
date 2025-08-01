@@ -1070,16 +1070,24 @@ def generate_latex_template(regular_codes, rare_codes, code_to_name, code_to_sta
         for page in range(1, num_rare_pages + 1):
             # Bestimme die Kennzeichen für diese Seite
             start_idx = (page - 1) * RARE_CODES_PER_PAGE
-            end_idx = min(start_idx + RARE_CODES_PER_PAGE, len(rare_codes))
+            end_idx = min(start_idx + RARE_CODES_PER_PAGE, len(rare_codes)+1)
             page_codes = rare_codes[start_idx:end_idx]
             
             # Erstelle eine Liste mit den seltenen Kennzeichen mit verbesserter Formatierung
             latex_content += r"\begin{enumerate}[leftmargin=1.5em,itemindent=0em,labelsep=0.5em,align=left,label={}]" + "\n"
             
             # Füge die Kennzeichen in die Liste ein
+            # BK ist ein nicht eindeutiges Kennzeichen. Es ist Üblich in Backnang (BaWü) und Möglich in Börde (Sachsen Anhalt)
+            previous_code = None
             for code in page_codes:
+                # Prüfe, ob BK an dieser Stelle eingefügt werden sollte (alphabetische Sortierung)
+                if previous_code and previous_code < "BK" and code > "BK":
+                    # Füge BK mit dem Namen Börde ein
+                    latex_content += r"\item \checkbox~\textbf{BK} Börde\n"
+                
                 region_name = normalize_text(code_to_name.get(code, ''))
                 latex_content += r"\item \checkbox~\textbf{" + code + r"} " + region_name + "\n"
+                previous_code = code
             
             latex_content += r"\end{enumerate}" + "\n"
             

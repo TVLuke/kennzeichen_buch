@@ -28,10 +28,11 @@ def generate_license_section(config=None):
     license_content += r"\textbf{3. KfzKennzeichen  Liste von Berlin Open Data}\\" + "\n"
     license_content += r"Quelle: \url{https://www.govdata.de/suche/daten/kfz-kennzeichen-deutschland3785e}\\" + "\n"
     license_content += r"Lizenz: CC BY 4.0\\" + "\n"
-    license_content += r"Herausgeber: Berlin Open Data (2016)\\[0.5cm]" + "\n"
+    license_content += r"Herausgeber: Berlin Open Data (2016)\\" + "\n"
+    license_content += r"Fehler wurden für die Verarbeitung korrigiert.\\[0.5cm]" + "\n"
 
     # Füge die Versionsinformation hinzu
-    version_text = "Version 1.3.0 Aachen"
+    version_text = "Version 1.9.3 - Aichach-Friedberg"
     if config and "version" in config:
         version_text = config["version"]
     
