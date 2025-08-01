@@ -123,7 +123,8 @@ Die folgenden Dateien musst du herunterladen und im Projektverzeichnis platziere
    - https://www.govdata.de/suche/daten/kfz-kennzeichen-deutschland3785e
    - Dateiname: `kfz-kennz-d.csv`
    - Platzierung: Im Hauptverzeichnis des Projekts (`kfz-kennz-d.csv`)
-   - [CC-BY 4.0](https://opendefinition.org/licenses/cc-by/) "Berlin Open Data"
+   - [CC-BY 4.0](https://opendefinition.org/licenses/cc-by/) "Berlin Open Data" (Datensatz verändert)
+   - Im Datensatz ist BK fälschlicherweise "Bochum", dies wurde korrigiert.
 
 Diese Dateien sind aufgrund von Lizenz- und Größenbeschränkungen nicht im Repository enthalten und müssen separat heruntergeladen werden.
 
