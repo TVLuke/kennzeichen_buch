@@ -8,12 +8,12 @@ Das jeweilige Kennzeichen wird als Home markiert.
 import os
 import sys
 import pandas as pd
-import subprocess
 import time
 import concurrent.futures
 from tqdm import tqdm
 import geopandas as gpd
 from create_title_image import load_shapefile, extract_codes_from_shapefile, create_title_image
+from generate_kfz_maps_neu import main as generate_kfz_maps
 
 # Pfade zu den Dateien
 CSV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kfz-kennz-d.csv")
@@ -119,30 +119,16 @@ def generate_book_for_code(code, max_retries=3):
     print(f"Erstelle Titelbild für Kennzeichen {code}...")
     create_title_image_for_code(code)
     
-    # Führe das Hauptskript mit dem Kennzeichen als Home aus
-    # Wir lassen das Suffix leer, da das Hauptskript bereits das Kennzeichen im Dateinamen verwendet
-    cmd = [
-        sys.executable,
-        "generate_kfz_maps_neu.py",
-        "--home", code,
-        "--suffix", ""
-    ]
-    
     print(f"Starte Generierung für Kennzeichen {code}...")
     
     for attempt in range(max_retries):
         try:
-            # Führe das Skript ohne Timeout aus
-            result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+            # Rufe die main-Funktion direkt auf, anstatt einen Subprocess zu starten
+            generate_kfz_maps(home_code=code, output_suffix="")
             print(f"Generierung für {code} erfolgreich abgeschlossen.")
             return True
-        except subprocess.CalledProcessError as e:
-            print(f"Fehler bei der Generierung für {code} (Versuch {attempt+1}/{max_retries}):")
-            print(f"Fehlercode: {e.returncode}")
-            print(f"Ausgabe: {e.output}")
-            print(f"Fehler: {e.stderr}")
         except Exception as e:
-            print(f"Unerwarteter Fehler bei der Generierung für {code}: {str(e)}")
+            print(f"Unerwarteter Fehler bei der Generierung für {code} (Versuch {attempt+1}/{max_retries}): {str(e)}")
         
         if attempt < max_retries - 1:
             print(f"Versuche es erneut in 2 Sekunden...")

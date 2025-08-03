@@ -32,7 +32,7 @@ def generate_license_section(config=None):
     license_content += r"Fehler wurden für die Verarbeitung korrigiert.\\[0.5cm]" + "\n"
 
     # Füge die Versionsinformation hinzu
-    version_text = "Version 1.9.3 - Aichach-Friedberg"
+    version_text = "Version 1.11 - Altenkirchen"
     if config and "version" in config:
         version_text = config["version"]
     

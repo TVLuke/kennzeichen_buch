@@ -466,7 +466,6 @@ def compile_latex_document(tex_file):
             
             if process.returncode != 0:
                 print("Fehler beim Kompilieren des LaTeX-Dokuments")
-                return False
         
         # Prüfe, ob die PDF-Datei erstellt wurde
         pdf_file = tex_file.replace(".tex", ".pdf")
@@ -549,22 +548,22 @@ def main(home_code=None, output_suffix="", debug_multi_regions=False):
     # Erstelle die LaTeX-Vorlage
     home_code = config.get('home', '')
     if home_printer:
-        tex_file_name = f"kfz_sammelbuch_{home_code}{output_suffix}_printerfriendly.tex"
+        tex_file_name = f"kfz_sammelbuch_{home_code}{output_suffix}_final.tex"
         tex_file = generate_latex_template(regular_codes, rare_codes, code_to_name, code_to_state, code_to_other_codes, gdf, code_to_region, code_to_name_multi, config, output_file=tex_file_name)
     else:
-        tex_file_name = f"kfz_sammelbuch_{home_code}{output_suffix}.tex"
+        tex_file_name = f"kfz_sammelbuch_{home_code}{output_suffix}_final.tex"
         tex_file = generate_latex_template(regular_codes, rare_codes, code_to_name, code_to_state, code_to_other_codes, gdf, code_to_region, code_to_name_multi, config, output_file=tex_file_name)
     
-    # Kompiliere das LaTeX-Dokument zu PDF
+    # Kompiliere das LaTeX-Dokument zu PDF; twice for content
+    print("Kompiliere das LaTeX-Dokument zu PDF; twice for content")
     pdf_file = compile_latex_document(tex_file)
     
     # Bearbeite das PDF (füge Titelbild hinzu, etc.)
     if pdf_file and os.path.exists(pdf_file):
-        home_suffix = f"_{config['home']}" if config.get('home') else ""
         if home_printer:
-            final_pdf = f"kfz_sammelbuch{home_suffix}{output_suffix}_printerfriendly_final.pdf"
+            final_pdf = f"kfz_sammelbuch_{home_code}{output_suffix}_final.pdf"
         else:
-            final_pdf = f"kfz_sammelbuch{home_suffix}{output_suffix}_final.pdf"
+            final_pdf = f"kfz_sammelbuch_{home_code}{output_suffix}_final.pdf"
         process_pdf(pdf_file, final_pdf, config, home_printer)
         print(f"\nFertiges Buch erstellt: {final_pdf}")
     else:

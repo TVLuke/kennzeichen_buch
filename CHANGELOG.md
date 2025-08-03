@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
 
+## [[1.11]](https://github.com/TVLuke/kennzeichen_buch/releases/tag/1.11) "Altenkirchen" - 2025-08-02
+
+### Korrigiert
+- Verschiedene Code Änderungen
+
 ## [[1.9.3]](https://github.com/TVLuke/kennzeichen_buch/releases/tag/1.9.3) "Aichach-Friedberg" - 2025-08-01
 
 ### Korrigiert
